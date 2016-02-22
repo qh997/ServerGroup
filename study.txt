@@ -65,4 +65,12 @@ archive服务器
 		# wget https://help.ubuntu.com/lts/installation-guide/example-preseed.txt
 		# cp example-preseed.txt trusty-desktop.seed
 		# cp example-preseed.txt trusty-server.seed
-		修改
+		修改上述两个文件。
+
+	apache:
+		# apt-get install apache2
+		# touch /etc/apache2/sites-available/ubuntu-preseed.conf
+		修改上述文件
+		# cd /etc/apache2/sites-enabled
+		# ln -s ../sites-available/ubuntu-preseed.conf
+		# service apache2 restart

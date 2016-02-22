@@ -1,0 +1,8 @@
+10.3.8.10
+/srv/www/setup/example-preseed.txt
+/srv/www/setup/trusty-desktop.seed
+/srv/www/setup/trusty-server.seed
+/srv/tftpboot/ubuntu-installer/amd64/boot-screens/txt.cfg
+/etc/apache2/sites-available/ubuntu-preseed.conf
+/etc/default/tftpd-hpa
+/etc/apache2/apache2.conf

@@ -12,7 +12,7 @@ zone "home.qh997.com" {
 	allow-update { key "rndc-key"; };
 };
 
-zone "8.3.10.in-addr.apra" {
+zone "8.3.10.in-addr.arpa" {
 	type master;
 	file "/var/lib/bind/db.8.3.10.in-addr.arpa";
 	allow-update { key "rndc-key"; };

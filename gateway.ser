@@ -1,0 +1,9 @@
+192.168.1.10
+/etc/bind/named.conf
+/etc/bind/named.conf.local
+/etc/bind/named.conf.options
+/etc/dhcp/dhcpd.conf
+/etc/dhcp/dynamic-hosts.conf
+/etc/dhcp/fixed-hosts.conf
+/etc/rc.local
+/home/gengs/iptables.conf
