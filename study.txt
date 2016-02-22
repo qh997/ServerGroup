@@ -1,0 +1,68 @@
+﻿网关服务器 gateway
+	双网卡：
+		eth0 - 外网网卡，dhcp 192.168.1.10
+		eth1 - 内网网卡，static 10.3.8.1
+
+	安装配置dhcp：
+		# apt-get install isc-dhcp-server
+		# vim /etc/default/isc-dhcp-server
+			e: INTERFACES="eth1"
+		# 修改/etc/dhcp/dhcpd.conf
+
+	配置iptables（临时）：
+		# echo 1 > /proc/sys/net/ipv4/ip_forward
+		# iptables -t nat -A POSTROUTING -d 10.3.8.0/24 -o eth1  -j MASQUERADE
+		# iptables -t nat -A POSTROUTING -s 10.3.8.0/24 -o eth0  -j MASQUERADE
+
+	配置iptables（永久）：
+		# vim /etc/sysctl.conf
+			e: net.ipv4.ip_forward=1
+		# iptables-save > /root/iptables.conf
+		# vim /etc/rc.local
+			a: iptables-resorte < /root/iptables.conf
+
+	此时内网的终端就可以分配到IP地址，并且能够访问外网了。
+
+	安装配置bind9：
+		# apt-get install bind9
+		# rndc-confgen -a -c /etc/bind/rndc.key（可以省略）
+		# cp /etc/bind/rndc.key /etc/dhcp/ddns-keys/.
+		# chown dhcpd:dhcpd /etc/dhcp/ddns-keys/rndc.key
+		# chmod +r /etc/dhcp/ddns-keys/rndc.key
+		修改/etc/dhcp/dhcpd.conf
+		修改/etc/bind下的文件 named.conf named.conf.local named.conf.options
+		在目录/var/lib/bind/新建文件：db.home.qh997.com db.8.3.10.in-addr.arpa
+
+	此时内网终端就可以访问域名系统了，并且内网的DDNS也开始工作了。
+
+archive服务器
+	tftp：
+		# apt-get install tftpd-hpa
+		# vim /etc/default/tftpd-hpa
+			e: TFTP_DIRECTORY="/srv/tftpboot"
+			e: TFTP_OPTIONS="-l -s"
+		# mkdir /srv/tftpboot
+		# chown -R root:nogroup /srv/tftpboot
+		从ubuntu源上下载netboot：
+		# wget http://mirrors.aliyun.com/ubuntu/dists/trusty/main/installer-amd64/current/images/netboot/netboot.tar.gz
+		# cd /srv/tftpboot
+		# tar -zxvf /path/to/netboot.tar.gz
+		# chmod -R +r /srv/tftpboot/
+		修改在gateway服务器中的/etc/dhcp/dhcpd.conf
+			a:next-server 10.3.8.10;
+			a:filename "pxelinux.0";
+		此时pxe服务器就可以提供服务了，我们还需要对其个性化配置一下。
+		首先安装apache服务：
+		# apt-get install apache2
+		# a2enmod alias
+		# touch /etc/apache2/sites-available/ubuntu-preseed.conf
+		修改ubuntu-preseed.conf
+		# cd /etc/apache2/sites-enabled
+		# rm 000-default.conf
+		# ln -s ../sites-available/ubuntu-preseed.conf .
+		# mkdir -p /srv/www/setup
+		下载preseed配置文件：
+		# wget https://help.ubuntu.com/lts/installation-guide/example-preseed.txt
+		# cp example-preseed.txt trusty-desktop.seed
+		# cp example-preseed.txt trusty-server.seed
+		修改

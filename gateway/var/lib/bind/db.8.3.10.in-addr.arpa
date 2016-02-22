@@ -1,0 +1,13 @@
+$TTL 3600
+
+@	IN	SOA	gateway.home.qh997.com. qh997.hotmail.com. (
+			997
+			604800
+			86400
+			2419200
+			604800
+)
+@	IN	NS	gateway.home.qh997.com.
+1	IN	PTR	gateway
+1	IN	PTR	ns
+10	IN	PTR	archive
